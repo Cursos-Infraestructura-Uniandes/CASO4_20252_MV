@@ -31,7 +31,7 @@ TRACKING_DATA = load_tracking_data()
 def simulate_cpu_ram_load():    
     # Phase 1: Generate massive data (RAM)
     items = []
-    for i in range(500_000):
+    for i in range(100_000):
         item = {
             'id': f'item{i:06d}',
             'data': ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=100)),

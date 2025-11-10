@@ -1,44 +1,48 @@
 #!/bin/bash
 set -e
 
-# Configuration
+PORT="8000"
+HOST="localhost"
+RESULTS_DIR="./results"
 JMETER_BIN="/opt/jmeter/bin/jmeter"
 JMX_FILE="test_configuration.jmx"
 
-# Hardcoded test parameters
-HOST="localhost"
-PORT="8000"
-ENDPOINT="/heavy"
-
-# Check JMeter installation
-if [ ! -x "$JMETER_BIN" ]; then
-    echo "JMeter not found at $JMETER_BIN. Please install it first."
-    exit 1
+# --- START WEB SERVER ---
+if ! lsof -i :$PORT -t > /dev/null 2>&1; then
+    mkdir -p "$RESULTS_DIR"
+    (cd "$RESULTS_DIR" && python3 -m http.server "$PORT" > /dev/null 2>&1 &)
 fi
 
-# Check if JMX file exists
-if [ ! -f "$JMX_FILE" ]; then
-    echo "JMX test plan not found: $JMX_FILE"
-    exit 1
-fi
+# --- REQUEST DATA ---
+read -p "Número de usuarios concurrentes: " USERS
+read -p "ID del paquete a rastrear: " PACKAGE_ID
 
-# Ask for concurrent users
-read -p "Enter number of concurrent users: " USERS
-RESULTS_FILE="${USERS}_users_results.csv"
+# --- VERIFICATIONS ---
+[ ! -x "$JMETER_BIN" ] && echo "JMeter not found at $JMETER_BIN" && exit 1
+[ ! -f "$JMX_FILE" ] && echo "JMX File not found: $JMX_FILE" && exit 1
 
-# Run JMeter test
-echo "Running JMeter test..."
-echo "   Host: $HOST"
-echo "   Port: $PORT"
-echo "   Endpoint: $ENDPOINT"
-echo "   Concurrent users: $USERS"
-echo
+# --- EXECUTE TEST ---
+RESULTS_FILE="$RESULTS_DIR/${USERS}_users.csv"
+rm -f "$RESULTS_FILE"
+
+echo "
+Ejecutando test JMeter...
+   Host: $HOST
+   Port: $PORT
+   Endpoint: /packages/${PACKAGE_ID}/track
+   Usuarios: $USERS
+"
 
 $JMETER_BIN -n -t "$JMX_FILE" \
     -Jhost="$HOST" \
     -Jport="$PORT" \
-    -Jendpoint="$ENDPOINT" \
+    -Jendpoint="/packages/${PACKAGE_ID}/track" \
     -Jthreads="$USERS" \
     -l "$RESULTS_FILE"
 
-echo "Test completed. Results saved in: $RESULTS_FILE"
+echo "
+================================================================
+Test completado
+Resultados: $RESULTS_FILE
+Ver en navegador para descargar archivo: http://$HOST:$PORT/
+================================================================"

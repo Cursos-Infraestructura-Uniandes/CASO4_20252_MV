@@ -24,7 +24,6 @@ rm -f $JMETER_TGZ
 if ! grep -q "export PATH=\$PATH:$JMETER_DIR/bin" ~/.bashrc; then
     echo "export PATH=\$PATH:$JMETER_DIR/bin" >> ~/.bashrc
 fi
-source ~/.bashrc
 
 echo "Verifying JMeter installation..."
-jmeter -v
+$JMETER_DIR/bin/jmeter -v
