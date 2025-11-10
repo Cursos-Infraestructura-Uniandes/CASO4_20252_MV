@@ -1,14 +1,26 @@
-# CASO4_20252_MAQUINA_VIRTUAL
-Este repositorio contiene los archivos de configuración de las maquina virtuales para el plan de capacidad del caso 4 del curso.
+# CASO4_20252_MV
 
-Comandos para inicializar la maquina virtual (Esto solo se hace la primera vez):
+Este repositorio contiene los archivos de configuración de las maquinas virtuales para ejecutar el plan de carga del caso 4 del curso.
+
+Enlace del tutorial para realizar las pruebas de carga: www.youtube.com
+
+### Conectarse a la maquina virtual:
+
+Cada estudiante tiene el usuario, contraseña y dirección IP de su maquina virtual asignada. Toda la prueba de carga se hara en una terminal, para ello debe abrir una **terminal bash**.
+
+Una vez se encuentre en la terminal bash, se deben conectar por ssh a su maquina virtual meadiante el siguiente comando:
 
 ```
-cd Desktop
+ssh <usuario>@<direccion_ip>
+Ej: ssh estudiante@172.24.100.7
+```
 
+### Comandos para instalar Git, Docker y Jmeter:
+
+```
 sudo apt install git
 
-git clone https://github.com/Cursos-Infraestructura-Uniandes/CASO4_20252_MAQUINA_VIRTUAL.git
+git clone https://github.com/Cursos-Infraestructura-Uniandes/CASO4_20252_MV.git
 
 cd CASO4_20252_MAQUINA_VIRTUAL
 
@@ -21,44 +33,28 @@ chmod +x install_jmeter.sh
 ./install_jmeter.sh
 ```
 
-Comandos para levantar el servicio de rastreo de paquetes:
+### Comandos para levantar el servicio de rastreo de paquetes:
+
+Para ejecutar la pruebas de carga primero deben levantar el contenedor que contiene el endpoint ```/packages/{package_id}/track``` y exponerlo en el localhost de la maquina virtual con el puerto 8000:
 
 ```
-cd tracking_service
+cd ~/CASO4_20252_MAQUINA_VIRTUAL/tracking_service
 
 chmod +x deploy_service.sh
 
 sudo ./deploy_service.sh
 ```
 
-Comandos para ejecutar una prueba de carga:
+### Comandos para ejecutar una prueba de carga:
+
+Una vez tengan el endpoint activo, ya pueden empezar a ejecutar las pruebas de carga. Para ello, debe ejecutar un script que ejecutara una prueba de carga (El script le pedira el número de usuarios concurrentes y el id de paquete que quiere rastrear):
 
 ```
-cd ..
-
-cd jmeter_test
+cd ~/CASO4_20252_MAQUINA_VIRTUAL/jmeter_test
 
 chmod +x run_test.sh
 
 ./run_test.sh
 ```
 
-Comandos para descargar los resultados de una prueba de carga en su computador local:
-
-```
-cd ~/Desktop/CASO4_20252_MAQUINA_VIRTUAL/jmeter_test
-
-nohup python3 -m http.server 8080 &
-```
-
-Y abre la siguiente url en tu navegador:
-
-```
-http://<IP_DE_TU_VM>:8080
-```
-
-Una vez termine de descargar las pruebas de carga:
-
-```
-ps aux | grep http.server
-```
+Debe descargar los archivos con los resultados de las pruebas de carga para posteriormente analizarlos.

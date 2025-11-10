@@ -31,7 +31,7 @@ TRACKING_DATA = load_tracking_data()
 def simulate_cpu_ram_load():    
     # Phase 1: Generate massive data (RAM)
     items = []
-    for i in range(100_000):
+    for i in range(10_000):
         item = {
             'id': f'item{i:06d}',
             'data': ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=100)),
@@ -54,9 +54,7 @@ def root():
 
 @app.get("/packages/{package_id}/track")
 def package_track(package_id: str):
-
     simulate_cpu_ram_load()
-
     return {
         "package_id": package_id,
         "sender_name": random.choice(TRACKING_DATA['names']),
