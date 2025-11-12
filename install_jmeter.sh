@@ -13,7 +13,7 @@ sudo apt update -y
 sudo apt install -y openjdk-17-jre wget tar
 
 # Download JMeter
-wget -q $JMETER_URL -O $JMETER_TGZ
+wget --show-progress $JMETER_URL -O $JMETER_TGZ
 
 # Extract and install
 tar -xzf $JMETER_TGZ
